@@ -1,23 +1,18 @@
-import { ExampleMcpServer } from './server';
-// Export the TodoMcpServer class for Durable Object binding
-export { ExampleMcpServer };
+import { CortensorMCP } from './server';
+export { CortensorMCP };
 
-// Worker entrypoint for handling incoming requests
+interface Env {
+  CORTENSOR_MCP: DurableObjectNamespace;
+}
+
 export default {
-  async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
+  async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
-    const sessionIdStr = url.searchParams.get('sessionId')
+    const sessionIdStr = url.searchParams.get('sessionId');
     const id = sessionIdStr
-        ? env.EXAMPLE_MCP_SERVER.idFromString(sessionIdStr)
-        : env.EXAMPLE_MCP_SERVER.newUniqueId();
-
-    console.log(`Fetching sessionId: ${sessionIdStr} with id: ${id}`);
-    
+      ? env.CORTENSOR_MCP.idFromString(sessionIdStr)
+      : env.CORTENSOR_MCP.newUniqueId();
     url.searchParams.set('sessionId', id.toString());
-
-    return env.EXAMPLE_MCP_SERVER.get(id).fetch(new Request(
-        url.toString(),
-        request
-    ));
+    return env.CORTENSOR_MCP.get(id).fetch(new Request(url.toString(), request));
   }
 };

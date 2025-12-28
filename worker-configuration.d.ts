@@ -6,7 +6,10 @@ declare namespace Cloudflare {
 		EXAMPLE_MCP_SERVER: DurableObjectNamespace<import("./src/index").ExampleMcpServer>;
 	}
 }
-interface Env extends Cloudflare.Env {}
+interface Env extends Cloudflare.Env {
+  CORTENSOR_MCP: any;
+  CORTENSOR_MCP: any;
+}
 
 // Begin runtime types
 /*! *****************************************************************************
